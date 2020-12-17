@@ -8,7 +8,7 @@
     <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
-    <script src="https://github.com/mapbox-gl-indoor/mapbox-gl-indoor/releases/download/0.0.4-rc1/mapbox-gl-indoor.js"></script>
+    <script src="https://github.com/map-gl-indoor/map-gl-indoor/releases/download/v0.2.0/map-gl-indoor.umd.js"></script>
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
     <link rel="stylesheet"
@@ -39,7 +39,8 @@
             container: "map",
             zoom: 18,
             center: [2.3592843, 48.8767904],
-            style: 'mapbox://styles/mapbox/streets-v10'
+            style: 'mapbox://styles/mapbox/streets-v10',
+            hash: true
         });
 
         map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
@@ -48,8 +49,12 @@
          * Indoor specific
          */
 
-        // Create the indoor handler
-        const indoor = new mapboxgl_indoor.Indoor(map);
+        // Where the indoor layers will be inserted.
+        // Here, 'housenum-label' comes from streets-v10
+        const beforeLayerId = 'housenum-label';
+
+        // To avoid unwanted overlap from streets-v10 layers, some layers are hidden when an indoor map is shown
+        const layersToHide = ['poi-scalerank4-l15', 'poi-scalerank4-l1', 'poi-scalerank3', 'road-label-small'];
 
         var customData;
 
@@ -57,7 +62,7 @@
         fetch('https://raw.githubusercontent.com/mapbox-gl-indoor/mapbox-gl-indoor/master/debug/maps/gare-de-l-est.geojson')
             .then(res => res.json())
             .then(geojson => {
-                indoor.addMap(mapboxgl_indoor.IndoorMap.fromGeojson(geojson));
+                map.indoor.addMap(mapgl_indoor.IndoorMap.fromGeojson(geojson, { beforeLayerId, layersToHide }));
                 customData = geojson;
             });
 
@@ -98,7 +103,7 @@
         });
         geocoder.on("result", (result) => {
             console.log('result.result.properties:', result.result.properties);
-            indoor.setLevel(parseInt(result.result.properties.level));
+            map.indoor.setLevel(parseInt(result.result.properties.level));
         })
         map.addControl(geocoder, 'top-right');
 
@@ -106,7 +111,7 @@
         map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
         // Add the specific control
-        map.addControl(new mapboxgl_indoor.IndoorControl(indoor), 'top-right');
+        map.addControl(map.indoor.control, 'top-right');
 
     </script>
 
