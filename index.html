@@ -59,7 +59,7 @@
         var customData;
 
         // Retrieve the geojson from the path and add the map
-        fetch('https://raw.githubusercontent.com/mapbox-gl-indoor/mapbox-gl-indoor/master/debug/maps/gare-de-l-est.geojson')
+        fetch('https://raw.githubusercontent.com/map-gl-indoor/map-gl-indoor/main/example/maps/gare-de-l-est.geojson')
             .then(res => res.json())
             .then(geojson => {
                 map.indoor.addMap(mapgl_indoor.IndoorMap.fromGeojson(geojson, { beforeLayerId, layersToHide }));
