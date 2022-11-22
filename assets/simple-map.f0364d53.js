@@ -1,0 +1,2 @@
+import{a,I as e,b as s}from"./style.532636f9.js";import{m as t,a as n}from"./mapbox-gl.2e8cdf54.js";const r=document.querySelector("#app"),o=new t.exports.Map({container:r,zoom:18,center:[2.3592843,48.8767904],style:"mapbox://styles/mapbox/streets-v10",accessToken:n,hash:!0});a(o);const p=await(await fetch("maps/gare-de-l-est.geojson")).json();o.indoor.addMap(e.fromGeojson(p));o.addControl(new s);
+//# sourceMappingURL=simple-map.f0364d53.js.map

@@ -3,117 +3,22 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Display map navigation controls</title>
+    <title>Index</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
-    <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
-    <script src="https://github.com/map-gl-indoor/map-gl-indoor/releases/download/v0.2.0/map-gl-indoor.umd.js"></script>
-
-    <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
-    <link rel="stylesheet"
-        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
-        type="text/css" />
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #map {
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-        }
-    </style>
 </head>
 
 <body>
-    <div id="map"></div>
-
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiY2xlbWVudGlnb25ldCIsImEiOiJjazl2Z2hzcmkwYmF6M21zN3RqcHg5anU4In0.blXhwZzYBGSm6fJe0z0e-Q'
-        const map = window.map = new mapboxgl.Map({
-            container: "map",
-            zoom: 18,
-            center: [2.3592843, 48.8767904],
-            style: 'mapbox://styles/mapbox/streets-v10',
-            hash: true
-        });
-
-        map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
-
-        /**
-         * Indoor specific
-         */
-
-        // Where the indoor layers will be inserted.
-        // Here, 'housenum-label' comes from streets-v10
-        const beforeLayerId = 'housenum-label';
-
-        // To avoid unwanted overlap from streets-v10 layers, some layers are hidden when an indoor map is shown
-        const layersToHide = ['poi-scalerank4-l15', 'poi-scalerank4-l1', 'poi-scalerank3', 'road-label-small'];
-
-        var customData;
-
-        // Retrieve the geojson from the path and add the map
-        fetch('https://raw.githubusercontent.com/map-gl-indoor/map-gl-indoor/main/example/maps/gare-de-l-est.geojson')
-            .then(res => res.json())
-            .then(geojson => {
-                map.indoor.addMap(mapgl_indoor.IndoorMap.fromGeojson(geojson, { beforeLayerId, layersToHide }));
-                customData = geojson;
-            });
-
-            function forwardGeocoder(query) {
-            var matchingFeatures = [];
-
-            for (var i = 0; i < customData.features.length; i++) {
-                var feature = customData.features[i];
-                if (feature.properties.hasOwnProperty('name') &&
-                    feature.properties['name']
-                        .toLowerCase()
-                        .search(query.toLowerCase()) !== -1
-                ) {
-                    feature['place_name'] = feature.properties['name'];
-                    feature['center'] = turf.centroid(feature).geometry.coordinates;
-                    feature['place_type'] = ['park'];
-                    matchingFeatures.push(feature);
-                } else if (feature.properties.hasOwnProperty('name') &&
-                    feature.properties.name
-                        .toLowerCase()
-                        .search(query.toLowerCase()) !== -1
-                ) {
-                    feature['place_name'] = feature.properties.name;
-                    feature['center'] = turf.centroid(feature).geometry.coordinates;
-                    feature['place_type'] = ['park'];
-                    matchingFeatures.push(feature);
-                }
-            }
-            return matchingFeatures;
-        }
-        let geocoder = new MapboxGeocoder({
-            localGeocoderOnly: true,
-            localGeocoder: forwardGeocoder,
-            zoom: 19,
-            placeholder: 'Enter search e.g. Room',
-            mapboxgl: mapboxgl,
-            marker: true,
-        });
-        geocoder.on("result", (result) => {
-            console.log('result.result.properties:', result.result.properties);
-            map.indoor.setLevel(parseInt(result.result.properties.level));
-        })
-        map.addControl(geocoder, 'top-right');
-
-        // Add zoom and rotation controls to the map.
-        map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-        // Add the specific control
-        map.addControl(map.indoor.control, 'top-right');
-
-    </script>
+    <ul>
+        <li><a href="simple-map.html">Simple Map</a></li>
+        <li><a href="multiple-maps.html">Multiple Maps</a></li>
+        <li><a href="add-multi-levels-layer.html">Add a multi-levels layer (i.e. PoIs)</a></li>
+        <li><a href="custom-style.html">Custom Style</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="from-osm-file.html">From OSM file</a></li>
+        <li><a href="search-engine.html">Search engine</a></li>
+        <!-- <li><a href="with-map-server.html">With Map Server</a></li> -->
+        <li><a href="maplibre.html">Maplibre</a></li>
+    </ul>
 
 </body>
 
